@@ -1,5 +1,5 @@
 # frozen_string_literal: true
 
-module Xaba
+module XABA
   VERSION = "0.1.0"
 end

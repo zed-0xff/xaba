@@ -2,7 +2,7 @@
 
 require_relative "xaba/version"
 
-module Xaba
+module XABA
   class Error < StandardError; end
   # Your code goes here...
 end

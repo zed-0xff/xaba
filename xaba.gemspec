@@ -4,7 +4,7 @@ require_relative "lib/xaba/version"
 
 Gem::Specification.new do |spec|
   spec.name = "xaba"
-  spec.version = Xaba::VERSION
+  spec.version = XABA::VERSION
   spec.authors = ["Andrey \"Zed\" Zaikin"]
   spec.email = ["zed.0xff@gmail.com"]
 
