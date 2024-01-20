@@ -3,7 +3,8 @@ xaba
 
 Description
 -----------
-A pure ruby implementation of win32 PE binary files dumper.
+(un)packer for [Xamarin assemblies.blob](https://github.com/xamarin/xamarin-android/blob/main/Documentation/project-docs/AssemblyStores.md)
+
 
 Usage
 -----
