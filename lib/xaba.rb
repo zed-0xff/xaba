@@ -1,8 +1,11 @@
 # frozen_string_literal: true
 
-require_relative "xaba/version"
+require "iostruct"
+require "extlz4"
+require "xxhash"
 
-module XABA
-  class Error < StandardError; end
-  # Your code goes here...
-end
+module XABA; end
+
+require_relative "xaba/container"
+require_relative "xaba/manifest"
+require_relative "xaba/version"
