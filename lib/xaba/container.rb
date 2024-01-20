@@ -20,6 +20,18 @@ module XABA
       self
     end
 
+    def replace!(idx, newdata)
+      compressed_data = LZ4.block_compress(newdata)
+      delta = compressed_data.bytesize - data_entries[idx].data.bytesize
+      descriptors[idx].data_size += delta
+      data_entries[idx].original_size = newdata.bytesize
+      data_entries[idx].data = compressed_data
+
+      descriptors[idx + 1..].each do |d|
+        d.data_offset += delta
+      end
+    end
+
     def write(f)
       f.write @file_header.pack
       @descriptors.each do |d|
@@ -36,49 +48,62 @@ module XABA
       end
     end
 
-    def self.read(f)
-      new.read(f)
+    def self.read(fname)
+      File.open(fname, "rb") do |f|
+        new.read(f)
+      end
     end
   end
-end
 
-class FileHeader < IOStruct.new("a4LLLL", :magic, :version, :local_entry_count, :global_entry_count, :store_id)
-  def self.read(f)
-    r = super
-    raise "invalid magic: #{r.magic}" if r.magic != "XABA"
+  class FileHeader < IOStruct.new("a4LLLL", :magic, :version, :local_entry_count, :global_entry_count, :store_id)
+    def inspect
+      super.sub(/^#<struct /, "<")
+    end
 
-    r
-  end
-end
+    def self.read(f)
+      r = super
+      raise "invalid magic: #{r.magic}" if r.magic != "XABA"
 
-class AssemblyDescriptor < IOStruct.new(
-  "llllll",
-  :data_offset, :data_size,
-  :debug_data_offset, :debug_data_size,
-  :config_data_offset, :config_data_size
-)
-end
-
-# hashes of assembly _name_
-# same entry for hash32 and hash64
-class HashEntry < IOStruct.new("QLLL", :hash, :mapping_index, :local_store_index, :store_id)
-  def inspect
-    format("<HashEntry hash=%016x mapping_index=%3d local_store_index=%3d store_id=%d>", hash, mapping_index,
-           local_store_index, store_id)
-  end
-end
-
-class DataEntry < IOStruct.new("a4LL", :magic, :index, :original_size)
-  attr_accessor :data
-
-  def self.read(f)
-    r = super
-    raise "invalid magic: #{r.magic}" if r.magic != "XALZ"
-
-    r
+      r
+    end
   end
 
-  def pack
-    super + data
+  class AssemblyDescriptor < IOStruct.new(
+    "llllll",
+    :data_offset, :data_size,
+    :debug_data_offset, :debug_data_size,
+    :config_data_offset, :config_data_size
+  )
+    def inspect
+      super.sub(/^#<struct /, "<")
+    end
+  end
+
+  # hashes of assembly _name_
+  # same entry for hash32 and hash64
+  class HashEntry < IOStruct.new("QLLL", :hash, :mapping_index, :local_store_index, :store_id)
+    def inspect
+      format("<HashEntry hash=%016x mapping_index=%3d local_store_index=%3d store_id=%d>", hash, mapping_index,
+             local_store_index, store_id)
+    end
+  end
+
+  class DataEntry < IOStruct.new("a4LL", :magic, :index, :original_size)
+    attr_accessor :data
+
+    def inspect
+      super.sub(/^#<struct /, "<")
+    end
+
+    def pack
+      super + data
+    end
+
+    def self.read(f)
+      r = super
+      raise "invalid magic: #{r.magic}" if r.magic != "XALZ"
+
+      r
+    end
   end
 end

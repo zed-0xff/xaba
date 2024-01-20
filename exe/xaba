@@ -2,3 +2,5 @@
 # frozen_string_literal: true
 
 require "xaba"
+
+XABA::CLI.new.run

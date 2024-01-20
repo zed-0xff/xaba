@@ -26,12 +26,12 @@ module XABA
       end
     end
 
-    HEADER = %w[Hash 32 Hash 64 Blob ID Blob idx Name].freeze
+    HEADER = "Hash 32     Hash 64             Blob ID  Blob idx  Name"
 
     def self.read(fname = "assemblies.manifest")
       lines = File.readlines(fname).map(&:chomp).map(&:split)
       header = lines.shift
-      raise "invalid header: #{header.inspect}" if header != HEADER
+      raise "invalid header: #{header.inspect}" if header != HEADER.split
 
       assemblies = lines.map do |line|
         AssemblyInfo.new(*line)
@@ -40,7 +40,15 @@ module XABA
       new assemblies
     end
 
-    def initialize(assemblies)
+    def write(f)
+      data = [HEADER] + @assemblies.map do |a|
+                          format("0x%08x  0x%016x  %03d      %04d      %s",
+                                 a.hash32, a.hash64, a.blob_id, a.blob_idx, a.name)
+                        end
+      f.write("#{data.join("\n")}\n")
+    end
+
+    def initialize(assemblies = nil)
       @assemblies = assemblies
     end
 

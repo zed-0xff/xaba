@@ -15,11 +15,11 @@ Usage
 
     # xaba -h
 
-    Usage: xaba [options]
+    Usage: xaba [options] [files]
     Commands:
         -l, --list                       List assemblies in the blob
-        -u, --unpack [FILE]              Unpack all files or a specified file
-        -r, --replace FILE               Replace one file in the blob
+        -u, --unpack                     Unpack all or specified file(s)
+        -r, --replace                    Replace file(s) in the blob
     
     Options:
         -m, --manifest PATH              Pathname of the input assemblies.manifest file
@@ -28,6 +28,7 @@ Usage
         -o, --output PATH                Pathname for the output assemblies.blob file when replacing
                                          Pathname for the output dir when unpacking
         -v, --verbose                    Increase verbosity
+            --version                    Prints the version
         -h, --help                       Prints this help
 
 License

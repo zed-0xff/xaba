@@ -1,3 +1,7 @@
+require:
+  - rubocop-rspec
+  - rubocop-rake
+
 AllCops:
   TargetRubyVersion: 2.7
   NewCops: enable
@@ -13,13 +17,31 @@ Style/StringLiteralsInInterpolation:
 Style/Documentation:
   Enabled: false
 
+Style/FormatString:
+  Enabled: false
+
 Style/FormatStringToken:
+  Enabled: false
+
+Style/MultilineBlockChain:
   Enabled: false
 
 Metrics/AbcSize:
   Enabled: false
 
+Metrics/BlockLength:
+  Enabled: false
+
+Metrics/ClassLength:
+  Enabled: false
+
+Metrics/CyclomaticComplexity:
+  Enabled: false
+
 Metrics/MethodLength:
+  Enabled: false
+
+Metrics/PerceivedComplexity:
   Enabled: false
 
 Naming/MethodParameterName:
@@ -27,3 +49,16 @@ Naming/MethodParameterName:
 
 Layout/LineLength:
   Max: 120
+
+RSpec/ContextWording:
+  Enabled: false
+
+RSpec/DescribeClass:
+  Enabled: false
+
+RSpec/ExampleLength:
+  Enabled: false
+
+RSpec/MultipleExpectations:
+  Enabled: false
+
