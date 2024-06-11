@@ -144,11 +144,14 @@ module XABA
           printf "%5d: %s\n", i, e.inspect
         end
       when 1
-        printf "%4s %8s %8s %s\n", "idx", "compsz", "origsz", "name"
+        printf "%8s %8s %8s %8s %8s %8s %s\n", "idx", "doffset", "compsz", "origsz", "configsz", "dbgsz", "name"
         @manifest.assemblies.each_with_index do |a, i|
+          data_offset = @blob.descriptors[i].data_offset
           compsz = @blob.descriptors[i].data_size
           origsz = @blob.data_entries[i].original_size
-          printf "%4d %8d %8d %s\n", a.blob_idx, compsz, origsz, a.name
+          configsz = @blob.descriptors[i].config_data_size
+          dbgsz = @blob.descriptors[i].debug_data_size
+          printf "%8d %8x %8d %8d %8d %8d %s\n", a.blob_idx, data_offset, compsz, origsz, configsz, dbgsz, a.name
         end
       else
         # minimal verbosity
@@ -172,6 +175,8 @@ module XABA
         decompressed = LZ4.block_decode(de.data)
         dll_fname = File.join(@options[:output], "#{name}.dll")
         File.binwrite dll_fname, decompressed
+
+        File.binwrite("#{dll_fname}.config", de.config) if de.config
       end
     end
 

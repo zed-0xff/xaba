@@ -13,8 +13,13 @@ module XABA
       @hash64_entries = @file_header.local_entry_count.times.map { HashEntry.read(f) }
 
       @data_entries = @descriptors.map do |d|
+        f.seek d.data_offset
         DataEntry.read(f).tap do |de|
           de.data = f.read(d.data_size - DataEntry::SIZE)
+          if d.config_data_offset != 0 && d.config_data_size != 0
+            f.seek d.config_data_offset
+            de.config = f.read(d.config_data_size)
+          end
         end
       end
       self
@@ -89,7 +94,7 @@ module XABA
   end
 
   class DataEntry < IOStruct.new("a4LL", :magic, :index, :original_size)
-    attr_accessor :data
+    attr_accessor :data, :config
 
     def inspect
       super.sub(/^#<struct /, "<")
@@ -101,7 +106,7 @@ module XABA
 
     def self.read(f)
       r = super
-      raise "invalid magic: #{r.magic}" if r.magic != "XALZ"
+      raise "invalid magic: #{r.magic.inspect}" if r.magic != "XALZ"
 
       r
     end
